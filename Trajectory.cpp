@@ -105,10 +105,10 @@ class Trajectory
         T u, b, m, dr;
         Potential<T> V; // an object containing cont pot, Nsteps, Rsteps, Vsteps
 
-        T ContRmin;
+        T ContRmin, ContDtEnd, ContDthEnd;
         std::vector<T> ContR, ContDt,  ContDth;
 
-        T DiscRmin;
+        T DiscRmin, DiscDtEnd, DiscDthEnd;
         std::vector<T> DiscR, DiscDt, DiscDth;
         std::vector<T> k1, k2;
         
@@ -297,26 +297,29 @@ class Trajectory
         }
         
         
-        void EndPointDeviation(T& ERmin, T& EDt, T& EDth, bool RecomputeTraj = true)
+        void EndPointValues(bool RecomputeTraj = true)
         {
             if(RecomputeTraj == true) ComputeTrajectories();
             
-            ERmin = DiscRmin - ContRmin;
-            
-            EDt = 0;
-            EDth = 0;
-            for(int i=0; i<DiscR.size(); i++)
-            {
-                EDt += DiscDt[i];
-                EDth += DiscDth[i];
-            }
+            ContDtEnd = 0;
+            ContDthEnd = 0;
             for(int i=0; i<ContR.size(); i++)
             {
-                EDt -= ContDt[i];
-                EDth -= ContDth[i];
+                ContDtEnd += ContDt[i];
+                ContDthEnd += ContDth[i];
             }
-            EDt *= 2.0;
-            EDth *= 2.0;
+            ContDtEnd *= 2.0;
+            ContDthEnd *= 2.0;
+            
+            DiscDtEnd = 0;
+            DiscDthEnd = 0;
+            for(int i=0; i<DiscR.size(); i++)
+            {
+                DiscDtEnd += DiscDt[i];
+                DiscDthEnd += DiscDth[i];
+            }
+            DiscDtEnd *= 2.0;
+            DiscDthEnd *= 2.0;
         } //untested as of 3-5-22
         
         
