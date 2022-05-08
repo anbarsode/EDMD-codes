@@ -21,4 +21,4 @@ $b$ is the impact parameter
 $u$ is the speed at infinity (Rcut)  
 <img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/epd_LJ_Nsteps_11.png" alt="epd_LJ_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/epd_LJ_Nsteps_101.png" alt="epd_LJ_Nsteps_101" width="320"/>  
   
-Notice how the percentage errors get reduced get when the number of discountinuos steps is increased  
+Notice how the percentage errors get reduced get when the number of discountinuous steps is increased  
