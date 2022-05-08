@@ -8,7 +8,8 @@ Obviously using more number of discrete steps gives trajectories that are closer
 * Value of continuous potential at step location for step potential
   
 Here are some sample trajectories for the Lennard-Jones potential (cut off at r=3.0)  
-
+![traj_Nsteps_101](https://github.com/anbarsode/EDMD-codes/blob/9596d1c4b43cf8a2ffed69eb8c3785c39ded736d/traj_Nsteps_101.png)
+![traj_Nsteps_11](https://github.com/anbarsode/EDMD-codes/blob/9596d1c4b43cf8a2ffed69eb8c3785c39ded736d/traj_Nsteps_11.png)
 
 The following figures show the percentage errors in discrete trajectories' times and angles with respect to numerically computed continuous trajectories.  
 $T$ is the time taken by the particle to escape the potential (reach Rcut again)  
