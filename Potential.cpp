@@ -4,7 +4,8 @@ class Potential
     public:
         int Nsteps;
         T Rcut = 3.0; // To be edited at compile time by the user
-        T Vcut = 0.0; // TBEACTBTU
+        T Vcut = 0.0; // TBEACTBTUT
+        
         std::vector<T> Rsteps, Vsteps;
 
 
@@ -16,7 +17,7 @@ class Potential
             if(r < Rcut)
             {
                 T V;
-                T A = 1.0, B = 1.0;
+                T A = 1.0, B = 1.0; // TBEACTBTUT
                 
                 T r6 = pow(r, -6);
                 V = (A * r6 - B) * r6; // Lennard Jones
