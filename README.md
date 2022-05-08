@@ -5,7 +5,8 @@ Finding better ways to discretize continuous potentials in order to reduce compu
   
 Obviously using more number of discrete steps gives trajectories that are closer to the numerically "exact" trajectories. The job is to get accurate trajectories with as few steps as possible. The discrete trajectories in the following figures were generated using a simple discretizaton scheme:  
 * Uniform radial spacing between 0 to Rcut for step locations
-* Value of continuous potential at step location for step potential
+* Value of continuous potential at $R_1$ for step potential between $R_1$ and $R_2$(>$R_1$)
+
   
 Here are some sample trajectories for the Lennard-Jones potential (cut off at r=3.0)  
 (colors indicate how much discrete trajectory lags behind or is ahead of the continuous trajectory in terms of percentage error)  
