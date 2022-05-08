@@ -1,5 +1,6 @@
 // Update documentation
 // Test the trajectories wrt other codes
+// Trajectories are inaccurate. Must implement RK4 or higher order integration
 
 template <typename T = double>
 T rDotSquared(T r, T params[], Potential<T> V)
@@ -13,7 +14,7 @@ T rDotSquared(T r, T params[], Potential<T> V)
     //std::cout << r << " " << KE << std::endl;
     //if(KE < 0) std::cout << "Warning: KE < 0" << std::endl;
     return KE;
-} //SEMI - TESTED. Need to actually check these traj vs raw integration using RK4 in python
+}
 
 
 template <typename T = double>
@@ -93,7 +94,65 @@ void Simpson13Integrator(T params[], T xmin, T xmax, T dx_min, Potential<T> V, T
     
     Dt += fabs(dt);
     Dth += fabs(dth);
-} //SEMI - TESTED
+} //Inaccurate
+    
+    
+template <typename T = double>
+void AdRK4Integrator(T params[], T xmin, T xmax, T dx_min, Potential<T> V, T &Dt, T &Dth)
+{
+    /*
+    Integrates the equations of motion numerically using an adaptive RK4 algorithm
+    Radial resolution is at least as fine as dr
+    */
+    T dtdr, r, dx;
+    T c0, c1, c3;
+    T d0, d1, d3;
+    int maxiter = 8, iter=-1;
+    T rtol = 1e-2;
+    
+    int Nsteps = floor((xmax - xmin) / dx_min);
+    if(Nsteps < 2) Nsteps = 2;
+    Nsteps -= Nsteps % 2;
+    
+    T dtc, dthc, dtf=0, dthf=0;
+    do
+    {
+        dtc = dtf;
+        dthc = dthf;
+        dtf = 0;
+        dthf = 0;
+        dx = (xmax - xmin) / Nsteps;
+        for(int i=0; i<Nsteps; i++)
+        {
+            r = xmin + dx * i;
+            dtdr = pow(rDotSquared(r, params, V),-0.5);
+            c0 = dx * dtdr;
+            d0 = c0 * params[1] / r / r;
+            
+            r = xmin + dx * i + dx / 2.0;
+            dtdr = pow(rDotSquared(r, params, V),-0.5);
+            c1 = dx * dtdr;
+            d1 = c1 * params[1] / r / r;
+            
+            r = xmin + dx * i + dx;
+            dtdr = pow(rDotSquared(r, params, V),-0.5);
+            c3 = dx * dtdr;
+            d3 = c3 * params[1] / r / r;
+            
+            dtf += (c0 + 4.0 * c1 + c3);
+            dthf += (d0 + 4.0 * d1 + d3);
+        }
+        Nsteps *= 2;
+        iter++;
+    }while(fabs(dtc/dtf-1) > rtol && fabs(dthc/dthf-1) > rtol && iter < maxiter);
+    //if(iter==maxiter) std::cout << "Warning: exceeded maximum number of iterations during adaptive RK4 integration" << std::endl;
+    
+    dtf /= 6.0;
+    dthf /= 6.0;
+    
+    Dt += fabs(dtf);
+    Dth += fabs(dthf);
+}
 
 
 
@@ -209,7 +268,7 @@ class Trajectory
             {
                 Dt = 0;
                 Dth = 0;
-                Simpson13Integrator<T>(params, V.Rsteps[i-1], V.Rsteps[i], dr, V, Dt, Dth);
+                AdRK4Integrator<T>(params, V.Rsteps[i-1], V.Rsteps[i], dr, V, Dt, Dth);
                 ContR[i] = V.Rsteps[i];
                 ContDt[i] = Dt;
                 ContDth[i] = Dth;
@@ -217,7 +276,7 @@ class Trajectory
             
             Dt = 0;
             Dth = 0;
-            Simpson13Integrator<T>(params, V.Rsteps[Ntraj-2], ContRmin, dr, V, Dt, Dth);
+            AdRK4Integrator<T>(params, V.Rsteps[Ntraj-2], ContRmin, dr, V, Dt, Dth);
             ContR[Ntraj-1] = ContRmin;
             ContDt[Ntraj-1] = Dt;
             ContDth[Ntraj-1] = Dth;
@@ -320,7 +379,7 @@ class Trajectory
             }
             DiscDtEnd *= 2.0;
             DiscDthEnd *= 2.0;
-        } //untested as of 3-5-22
+        }
         
         
         void TurningPointCleanup(T BigNum, T SmallNum)
