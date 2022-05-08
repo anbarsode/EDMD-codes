@@ -10,7 +10,7 @@ Obviously using more number of discrete steps gives trajectories that are closer
   
 Here are some example trajectories for the Lennard-Jones potential (cut off at r=3.0)  
 (colors indicate how much discrete trajectory lags behind or is ahead of the continuous trajectory in terms of percentage error)  
-<img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/traj_Nsteps_111.png" alt="traj_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/traj_Nsteps_101.png" alt="traj_Nsteps_101" width="320"/>  
+<img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/traj_Nsteps_11.png" alt="traj_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/traj_Nsteps_101.png" alt="traj_Nsteps_101" width="320"/>  
 
 The following figures show the percentage errors in discrete trajectories' times and angles with respect to numerically computed continuous trajectories for various impact parameters and speeds.  
 $T$ is the time taken by the particle to escape the potential (reach Rcut again)  
