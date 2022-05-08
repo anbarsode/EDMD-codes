@@ -11,7 +11,7 @@ Here are some sample trajectories for the Lennard-Jones potential (cut off at r=
 ![traj_Nsteps_101](https://github.com/anbarsode/EDMD-codes/blob/9596d1c4b43cf8a2ffed69eb8c3785c39ded736d/traj_Nsteps_101.png)
 ![traj_Nsteps_11](https://github.com/anbarsode/EDMD-codes/blob/9596d1c4b43cf8a2ffed69eb8c3785c39ded736d/traj_Nsteps_11.png)
 
-The following figures show the percentage errors in discrete trajectories' times and angles with respect to numerically computed continuous trajectories.  
+The following figures show the percentage errors in discrete trajectories' times and angles with respect to numerically computed continuous trajectories for various impact parameters and speeds.  
 $T$ is the time taken by the particle to escape the potential (reach Rcut again)  
 $\theta$ is the angle which it moves during the same  
 $r_{min}$ is the distance of closest approach  
