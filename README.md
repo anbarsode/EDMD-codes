@@ -11,7 +11,8 @@ Obviously using more number of discrete steps gives trajectories that are closer
   
 Here are some example trajectories for the Lennard-Jones potential (cut off at r=3.0)  
 (colors indicate how much discrete trajectory lags behind or is ahead of the continuous trajectory in terms of percentage error)  
-<img src="https://github.com/anbarsode/EDMD-codes/blob/main/Plots/traj_Nsteps_11.png" alt="traj_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/main/Plots/traj_Nsteps_101.png" alt="traj_Nsteps_101" width="320"/>  
+<img src="https://github.com/anbarsode/EDMD-codes/blob/main/Plots/traj_Nsteps_11.png" alt="traj_Nsteps_11" width="320"/>
+<img src="https://github.com/anbarsode/EDMD-codes/blob/main/Plots/traj_Nsteps_101.png" alt="traj_Nsteps_101" width="320"/>  
 
 The following figures show the percentage errors in discrete trajectories' times and angles with respect to numerically computed continuous trajectories for various impact parameters and speeds.  
 $T$ is the time taken by the particle to escape the potential (reach Rcut again)  
@@ -20,6 +21,7 @@ $r_{min}$ is the distance of closest approach
 $\Delta$ denotes the error between discrete and continuous trajectories  
 $b$ is the impact parameter  
 $u$ is the speed at infinity (Rcut)  
+
 <img src="https://github.com/anbarsode/EDMD-codes/blob/main/Plots/epd_LJ_Nsteps_11.png" alt="epd_LJ_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/main/Plots/epd_LJ_Nsteps_101.png" alt="epd_LJ_Nsteps_101" width="320"/>  
   
 Tests on random number generation based on a given distribution (to be used later during optimization)  
