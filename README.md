@@ -20,7 +20,7 @@ $r_{min}$ is the distance of closest approach
 $\Delta$ denotes the error between discrete and continuous trajectories  
 $b$ is the impact parameter  
 $u$ is the speed at infinity (Rcut)  
-<img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/epd_LJ_Nsteps_11.png" alt="epd_LJ_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/8d9cec1d31de3a8db353b5f8033e6279ded1be23/Plots/epd_LJ_Nsteps_101.png" alt="epd_LJ_Nsteps_101" width="320"/>  
+<img src="https://github.com/anbarsode/EDMD-codes/blob/008d2f118f94e59b74638bfa90a0ba183d654ab4/Plots/epd_LJ_Nsteps_11.png" alt="epd_LJ_Nsteps_11" width="320"/> <img src="https://github.com/anbarsode/EDMD-codes/blob/008d2f118f94e59b74638bfa90a0ba183d654ab4/Plots/epd_LJ_Nsteps_101.png" alt="epd_LJ_Nsteps_101" width="320"/>  
   
 Tests on random number generation based on a given distribution (to be used later during optimization)  
 <img src="https://github.com/anbarsode/EDMD-codes/blob/4eca4377eade6885b82e2808f158e3cd8a3dc27e/Plots/RNG_testing.png" alt="RNG_testing" width="640"/>
