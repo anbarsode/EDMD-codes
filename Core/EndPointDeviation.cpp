@@ -54,7 +54,8 @@ int main()
             << std::endl;
         }
         auto elap = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
-        std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << "\r";
+        std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << std::endl;
+        //std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << "\r";
     }
     epd.close();
     return 0;

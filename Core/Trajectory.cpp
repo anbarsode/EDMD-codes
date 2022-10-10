@@ -1,6 +1,4 @@
 // Update documentation
-// Test the trajectories wrt other codes
-// Trajectories are inaccurate. Must implement RK4 or higher order integration
 
 template <typename T = double>
 T rDotSquared(T r, T params[], Potential<T> V)
@@ -18,7 +16,7 @@ T rDotSquared(T r, T params[], Potential<T> V)
 
 
 template <typename T = double>
-T BisectionRmin(T params[], T rhi, T dr, Potential<T> V)
+T BisectionRmin(T params[], T rhi, T dr, Potential<T> V, T rlo=0)
 {
     /*
     Finds the root of (dr/dt)^2 function using the bisection method
@@ -27,7 +25,7 @@ T BisectionRmin(T params[], T rhi, T dr, Potential<T> V)
     Returns the upper estimate so as to avoid the classically forbidden region
     */
     
-    T rlo = 0, rmin;
+    T rmin;
     
     while(rhi - rlo > dr)
     {
@@ -48,6 +46,37 @@ T BisectionRmin(T params[], T rhi, T dr, Potential<T> V)
         }
     }
     return rmin;
+}
+
+
+template <typename T = double>
+T NRRmin(T params[], T rmin, T dr, Potential<T> V)
+{
+    /*
+    Finds the root of (dr/dt)^2 function using the Newton-Raphson method
+    Resolution is V.dr
+    */
+    
+    T rat, f, dfdr;
+    int i = 0, maxiter=100;
+    
+    do
+    {
+        f = rDotSquared(rmin, params, V);
+        dfdr = (f - rDotSquared(rmin - dr, params, V)) / dr;
+        rat = f / dfdr;
+        rmin -= rat;
+        i++;
+        if(i > maxiter) return -1;
+    } while(fabs(rat) > dr);
+    
+    if(rDotSquared(rmin, params, V) > 0) return rmin;
+    else if(rDotSquared(rmin+dr, params, V) > 0) return rmin + dr;
+    else
+    {
+        std::cout << "Wut?" << std::endl;
+        return -1;
+    }
 }
 
 
@@ -239,6 +268,13 @@ class Trajectory
             T u2 = u * u, ub = u * b, u2b2 = ub * ub, two_by_m = 2.0 / m;
             T params[4] = {u2, ub, u2b2, two_by_m};
             
+            /*if(rDotSquared(V.Rsteps[0]-dr/2, params, V) > rDotSquared(V.Rsteps[0]-dr, params, V))
+            {
+                ContRmin = NRRmin(params, V.Rsteps[0]-dr/2, dr, V);
+                if(ContRmin < 0) ContRmin = BisectionRmin(params, V.Rsteps[0], dr, V);
+            }
+            else
+                ContRmin = BisectionRmin(params, V.Rsteps[0], dr, V);*/
             ContRmin = BisectionRmin(params, V.Rsteps[0], dr, V);
             
             //std::cout << "ContRmin = " << ContRmin << std::endl;
@@ -263,23 +299,41 @@ class Trajectory
             ContDth[0] = 0; // Initial theta = 0 by choice
             
             T Dt, Dth;
-            
-            for(int i=1; i<Ntraj-1; i++)
+            int i;
+            for(i=1; i<Ntraj-1; i++)
             {
                 Dt = 0;
                 Dth = 0;
                 AdRK4Integrator<T>(params, V.Rsteps[i-1], V.Rsteps[i], dr, V, Dt, Dth);
+                if(isnan(Dt) || isnan(Dth)) break;
                 ContR[i] = V.Rsteps[i];
                 ContDt[i] = Dt;
                 ContDth[i] = Dth;
             }
             
-            Dt = 0;
-            Dth = 0;
-            AdRK4Integrator<T>(params, V.Rsteps[Ntraj-2], ContRmin, dr, V, Dt, Dth);
-            ContR[Ntraj-1] = ContRmin;
-            ContDt[Ntraj-1] = Dt;
-            ContDth[Ntraj-1] = Dth;
+            if(isnan(Dt) || isnan(Dth))
+            {
+                ContRmin = BisectionRmin(params, V.Rsteps[i-1], dr, V, V.Rsteps[i]);
+                Dt = 0;
+                Dth = 0;
+                AdRK4Integrator<T>(params, V.Rsteps[i-1], ContRmin, dr, V, Dt, Dth);
+                ContR[i] = ContRmin;
+                ContDt[i] = Dt;
+                ContDth[i] = Dth;
+                
+                ContR.erase(ContR.begin()+i+1, ContR.end());
+                ContDt.erase(ContDt.begin()+i+1, ContDt.end());
+                ContDth.erase(ContDth.begin()+i+1, ContDth.end());
+            }
+            else
+            {
+                Dt = 0;
+                Dth = 0;
+                AdRK4Integrator<T>(params, V.Rsteps[Ntraj-2], ContRmin, dr, V, Dt, Dth);
+                ContR[Ntraj-1] = ContRmin;
+                ContDt[Ntraj-1] = Dt;
+                ContDth[Ntraj-1] = Dth;
+            }
         }
         
 
@@ -314,7 +368,11 @@ class Trajectory
                 r1_sq = V.Rsteps[i-1] * V.Rsteps[i-1];
                 r2_sq = V.Rsteps[i] * V.Rsteps[i];
                 k1i_sq = 1 / (u2 - 2.0 / m * V.Vsteps[i]);
-                if(k1i_sq <= 0) break;
+                if(k1i_sq <= 0)
+                {
+                    DiscRmin = V.Rsteps[i-1];
+                    break;
+                }
                 
                 k1i = sqrt(k1i_sq);
                 k2i = ub * ub * k1i_sq;
