@@ -15,7 +15,7 @@ int main()
     std::ofstream epd("./epd_LJ_Nsteps_11.txt", std::ios::out);
     
     double m = 1.0, dr = 1e-6;
-    double umin = 1e-6, umax = 10.0, du = 0.1;
+    double umin = 1e-3, umax = 10.0, du = 0.05;
     double bmin = 0.0, bmax = 1.0, db = 0.01;
     
     Potential<double> V;    
@@ -54,8 +54,8 @@ int main()
             << std::endl;
         }
         auto elap = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start);
-        std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << std::endl;
-        //std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << "\r";
+        //std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << std::endl;
+        std::cout << (u - umin) / (umax - umin) * 100.0 << "% done. Elapsed time (s) : " << elap.count()/1e6 << "\r";
     }
     epd.close();
     return 0;
