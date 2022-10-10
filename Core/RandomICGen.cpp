@@ -114,6 +114,7 @@ class RNG
                     return x;
                     break;
                 }
+                default: return 0;
             }
         }
 };

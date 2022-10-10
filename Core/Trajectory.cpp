@@ -33,7 +33,7 @@ T BisectionRmin(T params[], T rhi, T dr, Potential<T> V, T rlo=0)
         T flo = rDotSquared(rlo, params, V);
         if(signbit(fhi) == signbit(flo))
         {
-            std::cout << "Please provide a better initial bracket" << std::endl;
+            //std::cout << "Please provide a better initial bracket" << std::endl;
             return 0;
         }
         else
@@ -268,13 +268,6 @@ class Trajectory
             T u2 = u * u, ub = u * b, u2b2 = ub * ub, two_by_m = 2.0 / m;
             T params[4] = {u2, ub, u2b2, two_by_m};
             
-            /*if(rDotSquared(V.Rsteps[0]-dr/2, params, V) > rDotSquared(V.Rsteps[0]-dr, params, V))
-            {
-                ContRmin = NRRmin(params, V.Rsteps[0]-dr/2, dr, V);
-                if(ContRmin < 0) ContRmin = BisectionRmin(params, V.Rsteps[0], dr, V);
-            }
-            else
-                ContRmin = BisectionRmin(params, V.Rsteps[0], dr, V);*/
             ContRmin = BisectionRmin(params, V.Rsteps[0], dr, V);
             
             //std::cout << "ContRmin = " << ContRmin << std::endl;
@@ -414,9 +407,51 @@ class Trajectory
         }
         
         
-        void EndPointValues(bool RecomputeTraj = true)
+        void DiscardTurningPoint(void)
+        {
+            if(ContRmin > DiscRmin)
+            {
+                if(ContRmin != V.Rsteps[ContR.size()-1])
+                {
+                    ContR.pop_back();
+                    ContDt.pop_back();
+                    ContDth.pop_back();
+                }
+                
+                while(ContR.size() < DiscR.size())
+                {
+                    DiscR.pop_back();
+                    DiscDt.pop_back();
+                    DiscDth.pop_back();
+                    k1.pop_back();
+                    k2.pop_back();
+                }
+            }
+            else
+            {
+                if(DiscRmin != V.Rsteps[DiscR.size()-1])
+                {
+                    DiscR.pop_back();
+                    DiscDt.pop_back();
+                    DiscDth.pop_back();
+                    k1.pop_back();
+                    k2.pop_back();
+                }
+                
+                while(DiscR.size() < ContR.size())
+                {
+                    ContR.pop_back();
+                    ContDt.pop_back();
+                    ContDth.pop_back();
+                }
+            }
+        }
+        
+        
+        void EndPointValues(bool RecomputeTraj = true, bool KeepTurningPoint = true)
         {
             if(RecomputeTraj == true) ComputeTrajectories();
+            if(KeepTurningPoint != true) DiscardTurningPoint();
             
             ContDtEnd = 0;
             ContDthEnd = 0;
@@ -466,7 +501,7 @@ class Trajectory
 
                         while(DiscR.size() < ContR.size())
                         {
-                            DiscR.push-back(ContR[DiscR.size()]);
+                            DiscR.push_back(ContR[DiscR.size()]);
                             DiscDt.push_back(SmallNum);
                             DiscDth.push_back(SmallNum);
                             k1.push_back(BigNum); //Not sure about this
@@ -492,7 +527,7 @@ class Trajectory
 
                         while(ContR.size() < DiscR.size())
                         {
-                            ContR.push-back(DiscR[ContR.size()]);
+                            ContR.push_back(DiscR[ContR.size()]);
                             ContDt.push_back(BigNum);
                             ContDth.push_back(BigNum); //Not sure about this
                         }
@@ -503,7 +538,7 @@ class Trajectory
         } //untested as of 3-5-22
 
 
-        void ComputeDifferences(bool relative = true)
+        void ComputeDifferences(bool relative = true, T BigNum = 1e6)
         {
             //find the error between cont and disc trajectories
             
@@ -511,8 +546,10 @@ class Trajectory
             {
                 for(int i=0; i<ContR.size(); i++)
                 {
-                    DiffDt.push_back(DiscDt[i] / ContDt[i] - 1.0);
-                    DiffDth.push_back(DiscDth[i] / ContDth[i] - 1.0);
+                    if(ContDt[i] != 0) DiffDt.push_back(DiscDt[i] / ContDt[i] - 1.0);
+                    else DiffDt.push_back(BigNum);
+                    if(ContDth[i] != 0) DiffDth.push_back(DiscDth[i] / ContDth[i] - 1.0);
+                    else DiffDth.push_back(BigNum);
                 }
             }
             else
